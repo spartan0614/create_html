@@ -1,0 +1,293 @@
+//                             CODIGO USUARIO
+package analyzers;
+//import rootcode.*;
+import java.io.FileReader;
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+import java.util.ArrayList;
+
+//                  CÓDIGO PARSER, VARIABLES Y MÉTODOS
+parser code
+{:
+    //Lista de Errores
+    public ArrayList<Esemanticos> ErroresSintacticos = new ArrayList<Esemanticos> ();
+
+    //Metodo al que se llama automaticamente ante algún error sintáctico
+    public void syntax_error(Symbol s)
+    {        
+        System.err.println("Error Sintáctico en la Línea " + (s.left) +" Columna "+s.right+ ". No se esperaba este componente: " +s.value+"."); 
+        Esemanticos e = new Esemanticos(String.valueOf(s.value),"Sintactico", s.left + 1, s.right, "No se esperaba ese valor");
+        ErroresSintacticos.add(e);
+    }
+ 
+
+    //Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {        
+        System.err.println("Error síntactico irrecuperable en la Línea " + (s.left)+ " Columna "+s.right+". Componente " + s.value + " no reconocido.");
+        Esemanticos e = new Esemanticos(String.valueOf(s.value),"Sintactico", s.left + 1, s.right, "No se esperaba ese valor");
+        ErroresSintacticos.add(e);
+    }
+:}
+
+//                  CÓDIGO PARA ACCIONES GRAMATICALES
+action code
+{::}
+
+//              TERMINALES (tokens retornados por el Scanner). 
+terminal String open, paragraph, close, div, ddq, rgb, compi, cabecera, titulo, cuerpo, parrafo, salto, crearparrafo,
+                tabla, fila, columnac, columna, imagen, textoa, textob, boton, espacio, fondo, alineacion, path, getcontenido,
+                alto, ancho, id, texto, borde, true_, false_, semicolon, dolar, equal, plus, hypen, asterisk, dot, numero,
+                menor, mayor, menorque, mayorque, diferente, igualque, and, or, not, ollv, cllv, opar, cpar, hashtag, 
+                ocorch, ccorch, comma, identificador, cadena, echo, if_, else_, repetir, setcontenido, 
+                setalineacion,  getpath, beginHS, getalineacion, creartextoa, creartextob, crearimagen, insertar, clickboton,
+                getancho, setpath, setalto, endHS, setancho, getalto, creartabla,setborde, crearboton, settexto, gettexto 
+                ;
+
+
+//                              NO TERMINALES
+non terminal    S, START, HEADER, BODY, ATRIBUTO_CUERPO, CONTENIDO, CONT, ESPACIO, PARRAFO,
+                ATRIBUTO_PARRA, TEXTOA, TEXTOB, IMAGEN, ATRIBUTOS_IMAGEN, ATRI_IMAGE, PARRA,
+                BOTON, ATRIBUTOS_BOTON, ATRI_BTN, TABLA, ATRIBUTO_TABLA, LISTA_FILAS, FILA,
+                LISTA_COLUMNA, COLUMNA, SCRIPTHS, CUERPO_HSC, SCRIPT, DECLARACION, IMPRESION,
+                LISTA_IMPRESION, VALOR_STRING, IF, IF_OPCION, ELSE, REPETIR, STRUCT, LIST_ROWS,
+                ROW, LIST_COLUMN, SET, GET, VALOR_BOOLEANO, EXP, VALOR, CUERPO_SENTENCIA, 
+                SENTENCIA
+                ;
+
+
+//                 --     PRECEDENCIA DE OPERADORES     --
+precedence left or;
+precedence left and;
+precedence left not;
+precedence left menor, mayor, menorque, mayorque, diferente, igualque;
+precedence left plus, hypen;
+precedence left asterisk, div;
+
+//                          --    GRAMATICA    --
+
+start with S;
+
+S                   ::= START
+                    ;
+
+START               ::= open compi close HEADER BODY open div compi close
+                    ;
+
+HEADER              ::= open cabecera close open titulo close PARRA open div titulo close open div cabecera close
+                    ;
+
+BODY                ::= open cuerpo ATRIBUTO_CUERPO close CONTENIDO open div cuerpo close
+                    |   open cuerpo close CONTENIDO open div cuerpo close
+                    ;
+
+ATRIBUTO_CUERPO     ::= fondo equal cadena
+                    |   fondo equal ddq rgb ddq
+                    ;
+
+CONTENIDO           ::= CONTENIDO CONT
+                    |   CONT
+                    ;
+
+CONT                ::= ESPACIO
+                    |   PARRAFO
+                    |   paragraph
+                    |   open div salto close
+                    |   TEXTOA
+                    |   TEXTOB
+                    |   IMAGEN
+                    |   BOTON
+                    |   TABLA
+                    |   SCRIPTHS
+                    ;
+
+ESPACIO             ::= open espacio close CONTENIDO open div espacio close
+                    ;
+
+PARRAFO             ::= open parrafo ATRIBUTO_PARRA close PARRA open div parrafo close
+                    |   open parrafo close PARRA open div parrafo close
+                    ;
+
+PARRA               ::= PARRA paragraph
+                    |   paragraph
+                    ;
+
+ATRIBUTO_PARRA      ::= alineacion equal cadena
+                    ;
+
+TEXTOA              ::= open textoa close PARRA open div textoa close
+                    ;
+
+TEXTOB              ::= open textob close PARRA open div textob close
+                    ;
+
+IMAGEN              ::= open imagen ATRIBUTOS_IMAGEN close open div imagen close
+                    ;
+
+ATRIBUTOS_IMAGEN    ::= ATRIBUTOS_IMAGEN ATRI_IMAGE
+                    |   ATRI_IMAGE
+                    ;
+
+ATRI_IMAGE          ::= path equal cadena
+                    |   alto equal numero
+                    |   ancho equal numero
+                    ;
+
+BOTON               ::= open boton ATRIBUTOS_BOTON close open div boton close
+                    ;
+
+ATRIBUTOS_BOTON     ::= ATRIBUTOS_BOTON ATRI_BTN
+                    |   ATRI_BTN
+                    ;
+
+ATRI_BTN            ::= id equal cadena
+                    |   texto equal cadena
+                    ;
+
+TABLA               ::= open tabla ATRIBUTO_TABLA close LISTA_FILAS open div tabla close
+                    |   open tabla close LISTA_FILAS open div tabla close
+                    ;
+
+ATRIBUTO_TABLA      ::= borde equal true_
+                    |   borde equal false_
+                    ;
+
+LISTA_FILAS         ::= LISTA_FILAS FILA
+                    |   FILA
+                    ;
+
+FILA                ::= open fila close LISTA_COLUMNA open div fila close
+                    ;
+
+LISTA_COLUMNA       ::= LISTA_COLUMNA COLUMNA
+                    |   COLUMNA
+                    ;
+
+COLUMNA             ::= open columnac close CONTENIDO open div columnac close
+                    |   open columna close CONTENIDO open div columna close
+                    ;
+
+/***********************************************************************************************************************************************************/
+
+SCRIPTHS            ::= beginHS CUERPO_HSC endHS
+                    ;
+
+CUERPO_HSC          ::= CUERPO_HSC SCRIPT
+                    |   SCRIPT
+                    ;
+
+SCRIPT              ::= DECLARACION
+                    |   IMPRESION
+                    |   IF
+                    |   REPETIR
+                    |   hashtag identificador equal STRUCT semicolon
+                    |   hashtag identificador dot SET semicolon
+                    |   hashtag identificador dot insertar opar cpar semicolon
+                    ;
+
+DECLARACION         ::= dolar identificador equal EXP semicolon
+                    |   dolar identificador equal hashtag identificador dot GET semicolon
+                    ;
+
+IMPRESION           ::= echo LISTA_IMPRESION semicolon
+                    ;
+
+LISTA_IMPRESION     ::= LISTA_IMPRESION dot VALOR_STRING
+                    |   VALOR_STRING
+                    ;
+
+VALOR_STRING        ::= cadena
+                    |   dolar identificador
+                    ;
+
+CUERPO_SENTENCIA    ::= CUERPO_SENTENCIA SENTENCIA
+                    |   SENTENCIA
+                    ;
+
+SENTENCIA           ::= IMPRESION
+                    |   IF
+                    |   REPETIR
+                    ;
+
+IF                  ::= if_ opar EXP cpar ollv CUERPO_SENTENCIA IF_OPCION
+                    ;
+
+IF_OPCION           ::= ELSE cllv
+                    |   cllv
+                    ;
+
+ELSE                ::= cllv else_ ollv CUERPO_SENTENCIA
+                    ;
+
+REPETIR             ::= repetir opar EXP cpar ollv CUERPO_SENTENCIA cllv
+                    ;
+
+STRUCT              ::= crearparrafo opar VALOR_STRING comma cadena cpar
+                    |   creartextoa opar VALOR_STRING cpar 
+                    |   creartextob opar VALOR_STRING cpar 
+                    |   crearimagen opar VALOR_STRING cpar 
+                    |   crearimagen opar VALOR_STRING comma EXP comma EXP cpar 
+                    |   creartabla opar LIST_ROWS cpar 
+                    |   crearboton opar VALOR_STRING comma VALOR_STRING cpar 
+                    ;
+
+LIST_ROWS           ::= LIST_ROWS ROW
+                    |   ROW
+                    ;
+
+ROW                 ::= ocorch LIST_COLUMN ccorch
+                    ;
+
+LIST_COLUMN         ::= LIST_COLUMN comma VALOR
+                    |   VALOR
+                    ;
+
+SET                 ::= setcontenido opar VALOR_STRING cpar
+                    |   setalineacion opar VALOR_STRING cpar
+                    |   setpath opar VALOR_STRING cpar
+                    |   setalto opar EXP cpar
+                    |   setancho opar EXP cpar
+                    |   setborde opar VALOR_BOOLEANO cpar
+                    |   settexto opar VALOR_STRING cpar
+                    |   clickboton opar VALOR_STRING cpar
+                    ;
+
+GET                 ::= getcontenido opar cpar
+                    |   getalineacion opar cpar
+                    |   getpath opar cpar
+                    |   getalto opar cpar
+                    |   getancho opar cpar
+                    |   gettexto opar cpar
+                    ;
+
+VALOR_BOOLEANO      ::= true_
+                    |   false_
+                    |   dolar identificador 
+                    ;
+
+EXP                 ::= EXP or  EXP
+                    |   EXP and EXP
+                    |   not EXP
+                    |   EXP mayor EXP
+                    |   EXP menor EXP
+                    |   EXP menorque EXP
+                    |   EXP mayorque EXP
+                    |   EXP diferente EXP
+                    |   EXP igualque EXP
+                    |   EXP plus EXP
+                    |   EXP hypen EXP
+                    |   EXP div EXP
+                    |   EXP asterisk EXP
+                    |   hypen EXP
+                    |   opar EXP cpar
+                    |   VALOR
+                    ;
+
+VALOR               ::= cadena
+                    //|   entero
+                    //|   decimal
+                    |   numero
+                    |   true_
+                    |   false_
+                    |   dolar identificador
+                    ;

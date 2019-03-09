@@ -284,8 +284,6 @@ EXP                 ::= EXP or  EXP
                     ;
 
 VALOR               ::= cadena
-                    //|   entero
-                    //|   decimal
                     |   numero
                     |   true_
                     |   false_

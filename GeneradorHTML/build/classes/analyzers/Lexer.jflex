@@ -35,8 +35,6 @@ import java.util.ArrayList;
 
 identificador   = [a-zA-Z][a-zA-Z0-9_]*
 cadena          = [\"]([^\"\n]|(\\\"))*[\"] 
-//decimal         = [0-9]+ ('.' [0-9]+)
-//entero          = [0-9]+
 numero          = [0-9]+(\.[0-9]+)?
 hex             = [a-fA-F0-9]
 rgb             = "#"({hex}){6}

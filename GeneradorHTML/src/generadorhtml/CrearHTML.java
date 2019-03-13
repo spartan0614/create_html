@@ -11,7 +11,14 @@ import analyzers.Scanner;
 import analyzers.sym;
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
@@ -29,6 +36,15 @@ public class CrearHTML extends javax.swing.JFrame {
         initComponents();
     }
 
+    public void EscribirHTML(String contenido) throws FileNotFoundException, IOException{
+        try(Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("PAGINA.html"),"utf-8"))){
+            writer.write(contenido);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(CrearHTML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -236,6 +252,10 @@ public class CrearHTML extends javax.swing.JFrame {
 //               System.out.println("Lexema: " + s.value + " Token: " + s.sym);
 //               s = (Symbol)lexico.next_token();
 //           }
+             
+           //Crear archivo HTML 
+           EscribirHTML(sintactico.resultado);
+            
            
         }catch (Exception ex){
             Logger.getLogger(CrearHTML.class.getName()).log(Level.SEVERE, null, ex);

@@ -70,34 +70,48 @@ precedence left asterisk, div;
 
 start with S;
 
-S                   ::= START:a                                                                                 {:  resultado =  a; :}
+S                   ::= START:a                                                                 {:  resultado =  a; :}
                     ;
 
-START               ::= open:a compi:b close:c HEADER:d BODY:e open:f div:g compi:h close:i                     {: 
-                                                                                                                    RESULT = a + b + c + "\n" +
-                                                                                                                             d + "\n" +
-                                                                                                                             e + "\n" +
-                                                                                                                             f + g + h + i; 
-                                                                                                                :}
+START               ::= open:a compi close:b HEADER:c BODY:d open:e div:f compi close:g         {: 
+                                                                                                    RESULT = a + "HTML" + b + "\n" +
+                                                                                                            c + "\n" +
+                                                                                                            d + "\n" +
+                                                                                                            e + f + "HTML" + g; 
+                                                                                                :}
                     ;
 
-HEADER              ::= open cabecera close open titulo close PARRA open div titulo close open div cabecera close
+HEADER              ::= open:a cabecera close:b open:c titulo close:d PARRA:p open:e div:f titulo close:g open:h div:i cabecera close:j  
+                                                                                                {:
+                                                                                                    RESULT = a + "HEAD" + b + "\n" +
+                                                                                                            "  " + c + "TITLE" + d + p + e + f + "TITLE" + g + "\n" +
+                                                                                                            h + i + "HEAD" + j;
+                                                                                                :}
                     ;
 
-BODY                ::= open cuerpo ATRIBUTO_CUERPO close CONTENIDO open div cuerpo close
-                    |   open cuerpo close CONTENIDO open div cuerpo close
+BODY                ::= open:a cuerpo ATRIBUTO_CUERPO:b close:c CONTENIDO:d open:e div:f cuerpo close:g 
+                                                                                                {:
+                                                                                                    RESULT = a + "BODY" + " " + b + c + "\n" +
+                                                                                                            d + "\n" +
+                                                                                                            e + f + "BODY" + g;
+                                                                                                :}
+                    |   open:a cuerpo close:b CONTENIDO:c open:d div:e cuerpo close:f           {:
+                                                                                                    RESULT = a + "BODY" + b + "\n" +
+                                                                                                            c + "\n" +
+                                                                                                            d + e + "BODY" + f;
+                                                                                                :}
                     ;
 
-ATRIBUTO_CUERPO     ::= fondo equal cadena
-                    |   fondo equal ddq rgb ddq
+ATRIBUTO_CUERPO     ::= fondo equal:a cadena:b                                                  {: RESULT = "bgcolor" + a + b; :}                                                              
+                    |   fondo equal:a ddq:b rgb:c ddq:d                                         {: RESULT = "bgcolor" + a + b + c + d; :}
                     ;
 
-CONTENIDO           ::= CONTENIDO CONT
-                    |   CONT
+CONTENIDO           ::= CONTENIDO:a CONT:b                                                      {: RESULT = a + b; :}
+                    |   CONT:a                                                                  {: RESULT = a; :}
                     ;
 
-CONT                ::= ESPACIO
-                    |   PARRAFO
+CONT                ::= ESPACIO:a                                                               {: RESULT = a; :}
+                    |   PARRAFO:a                                                               {: RESULT = a; :}
                     |   paragraph
                     |   open div salto close
                     |   TEXTOA
@@ -106,24 +120,38 @@ CONT                ::= ESPACIO
                     |   BOTON
                     |   TABLA
                     |   SCRIPTHS
+                    |   error close
                     ;
 
-ESPACIO             ::= open espacio close CONTENIDO open div espacio close
+ESPACIO             ::= open:a espacio close:b CONTENIDO:c open:d div:e espacio close:f         {:
+                                                                                                    RESULT = a + "DIV" + b + "\n" +
+                                                                                                            c + "\n" +
+                                                                                                            d + e + "DIV" + f + "\n";
+                                                                                                :}                     
                     ;
 
-PARRAFO             ::= open parrafo ATRIBUTO_PARRA close PARRA open div parrafo close
-                    |   open parrafo close PARRA open div parrafo close
+PARRAFO             ::= open:a parrafo ATRIBUTO_PARRA:b close:c PARRA:d open:e div:f parrafo close:g    
+                                                                                                {:
+                                                                                                    RESULT = a + "p" + " " + b + c + "\n" +
+                                                                                                            d + "\n" +
+                                                                                                            e + f + "p" + g + "\n";
+                                                                                                :}
+                    |   open:a parrafo :b PARRA:c open:d div:e parrafo close:f                  {:  
+                                                                                                    RESULT = a + "p" + b + "\n" +
+                                                                                                            c + "\n" +
+                                                                                                            d + e + "p" + "\n";
+                                                                                                :}
                     ;
 
-PARRA               ::= PARRA G
-                    |   G
+PARRA               ::= PARRA:a G:b                                                             {: RESULT = a + " " + b; :}
+                    |   G:a                                                                     {: RESULT = a; :}
                     ;
 
-G                   ::= paragraph
-                    |   open div salto close
+G                   ::= paragraph:a                                                             {: RESULT = a;  :}                                                                   
+                    |   open:a div salto close:c                                                {: RESULT = a + "br" + c + "\n"; :}
                     ;
                     
-ATRIBUTO_PARRA      ::= alineacion equal cadena
+ATRIBUTO_PARRA      ::= alineacion equal:a cadena:b                                             {: RESULT = "align" + a + b; :}
                     ;
 
 TEXTOA              ::= open textoa close PARRA open div textoa close
@@ -194,6 +222,7 @@ SCRIPT              ::= DECLARACION
                     |   hashtag identificador equal STRUCT semicolon
                     |   hashtag identificador dot SET semicolon
                     |   hashtag identificador dot insertar opar cpar semicolon
+                    |   error semicolon
                     ;
 
 DECLARACION         ::= dolar identificador equal EXP semicolon

@@ -32,13 +32,12 @@ import java.util.ArrayList;
 
 /*  -----------------   ExPRESIONES REGULARES  ---------------  */
 
-
 identificador   = [a-zA-Z][a-zA-Z0-9_]*
 cadena          = [\"]([^\"\n]|(\\\"))*[\"] 
 numero          = [0-9]+(\.[0-9]+)?
 hex             = [a-fA-F0-9]
 rgb             = "#"({hex}){6}
-paragraph       = ([:jletterdigit:]|["."(),;:!¡\?¿])+
+paragraph       = ([:jletterdigit:]|["."(),;:!¡\?¿+#/])+
 
 CommentTAG      = "<!" [^*] ~"!>" | "<!" "!"+ ">"
 CommentHSC           = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
@@ -100,7 +99,6 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     \"                  { return symbol(sym.ddq, yytext()); }
 
     {rgb}               { return symbol(sym.rgb, yytext()); }
-    //{entero}            { return symbol(sym.entero, yytext()); }
     {numero}            { return symbol(sym.numero, yytext()); }
     {cadena}            { return symbol(sym.cadena, yytext()); }
     {WhiteSpace}        { /* Ignore */ }
@@ -164,8 +162,6 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     \"                  { return symbol(sym.ddq, yytext()); }
 
     {cadena}            { return symbol(sym.cadena, yytext()); }
-    //{entero}            { return symbol(sym.entero, yytext()); }
-    //{decimal}           { return symbol(sym.decimal, yytext()); }
     {numero}            { return symbol(sym.numero, yytext()); }
     {identificador}     { return symbol(sym.identificador, yytext()); }
     "."                 { return symbol(sym.dot, yytext()); }

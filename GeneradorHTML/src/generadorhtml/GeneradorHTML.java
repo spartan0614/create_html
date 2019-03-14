@@ -1,15 +1,11 @@
 package generadorhtml;
 import java.io.File;
-
 /*
   @author Dinora
  */
 public class GeneradorHTML {
     
-    public static void main(String[] args) {
-        CrearHTML pt = new CrearHTML();
-        pt.setVisible(true);
-        
+    public static void main(String[] args) {       
 //        //PARSER
 //        String path = "src/analyzers/Lexer.jflex";
 //        generarLexico(path); 
@@ -36,6 +32,9 @@ public class GeneradorHTML {
 //        }catch(Exception ex){
 //            System.out.println(ex);
 //        }
+        
+        CrearHTML pt = new CrearHTML();
+        pt.setVisible(true);
     }
     
     public static void generarLexico(String path){

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 //                  CÓDIGO PARSER, VARIABLES Y MÉTODOS
 parser code
 {:
+    public String resultado ="";
+
     //Lista de Errores
     public ArrayList<Esemanticos> ErroresSintacticos = new ArrayList<Esemanticos> ();
 
@@ -46,18 +48,18 @@ terminal String open, paragraph, close, div, ddq, rgb, compi, cabecera, titulo, 
 
 
 //                              NO TERMINALES
-non terminal    S, START, HEADER, BODY, ATRIBUTO_CUERPO, CONTENIDO, CONT, ESPACIO, PARRAFO,
-                ATRIBUTO_PARRA, TEXTOA, TEXTOB, IMAGEN, ATRIBUTOS_IMAGEN, ATRI_IMAGE, PARRA,
-                BOTON, ATRIBUTOS_BOTON, ATRI_BTN, TABLA, ATRIBUTO_TABLA, LISTA_FILAS, FILA,
-                LISTA_COLUMNA, COLUMNA, SCRIPTHS, CUERPO_HSC, SCRIPT, DECLARACION, IMPRESION,
-                LISTA_IMPRESION, VALOR_STRING, IF, IF_OPCION, ELSE, REPETIR, STRUCT, LIST_ROWS,
-                ROW, LIST_COLUMN, SET, GET, VALOR_BOOLEANO, EXP, VALOR, CUERPO_SENTENCIA, 
-                SENTENCIA
-                ;
+non terminal String     S, START, HEADER, BODY, ATRIBUTO_CUERPO, CONTENIDO, CONT, ESPACIO, PARRAFO,
+                        ATRIBUTO_PARRA, TEXTOA, TEXTOB, IMAGEN, ATRIBUTOS_IMAGEN, ATRI_IMAGE, PARRA,
+                        BOTON, ATRIBUTOS_BOTON, ATRI_BTN, TABLA, ATRIBUTO_TABLA, LISTA_FILAS, FILA,
+                        LISTA_COLUMNA, COLUMNA, SCRIPTHS, CUERPO_HSC, SCRIPT, DECLARACION, IMPRESION,
+                        LISTA_IMPRESION, VALOR_STRING, IF, IF_OPCION, ELSE, REPETIR, STRUCT, LIST_ROWS,
+                        ROW, LIST_COLUMN, SET, GET, VALOR_BOOLEANO, EXP, VALOR, CUERPO_SENTENCIA, G,
+                        SENTENCIA
+                        ;
 
 
 //                 --     PRECEDENCIA DE OPERADORES     --
-precedence left or;
+precedence left or, dot;
 precedence left and;
 precedence left not;
 precedence left menor, mayor, menorque, mayorque, diferente, igualque;
@@ -68,10 +70,15 @@ precedence left asterisk, div;
 
 start with S;
 
-S                   ::= START
+S                   ::= START:a                                                                                 {:  resultado =  a; :}
                     ;
 
-START               ::= open compi close HEADER BODY open div compi close
+START               ::= open:a compi:b close:c HEADER:d BODY:e open:f div:g compi:h close:i                     {: 
+                                                                                                                    RESULT = a + b + c + "\n" +
+                                                                                                                             d + "\n" +
+                                                                                                                             e + "\n" +
+                                                                                                                             f + g + h + i; 
+                                                                                                                :}
                     ;
 
 HEADER              ::= open cabecera close open titulo close PARRA open div titulo close open div cabecera close
@@ -108,10 +115,14 @@ PARRAFO             ::= open parrafo ATRIBUTO_PARRA close PARRA open div parrafo
                     |   open parrafo close PARRA open div parrafo close
                     ;
 
-PARRA               ::= PARRA paragraph
-                    |   paragraph
+PARRA               ::= PARRA G
+                    |   G
                     ;
 
+G                   ::= paragraph
+                    |   open div salto close
+                    ;
+                    
 ATRIBUTO_PARRA      ::= alineacion equal cadena
                     ;
 
@@ -231,7 +242,7 @@ STRUCT              ::= crearparrafo opar VALOR_STRING comma cadena cpar
                     |   crearboton opar VALOR_STRING comma VALOR_STRING cpar 
                     ;
 
-LIST_ROWS           ::= LIST_ROWS ROW
+LIST_ROWS           ::= LIST_ROWS comma ROW
                     |   ROW
                     ;
 
@@ -266,6 +277,7 @@ VALOR_BOOLEANO      ::= true_
                     ;
 
 EXP                 ::= EXP or  EXP
+                    |   EXP dot EXP
                     |   EXP and EXP
                     |   not EXP
                     |   EXP mayor EXP

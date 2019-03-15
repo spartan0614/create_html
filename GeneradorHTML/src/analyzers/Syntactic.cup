@@ -1,6 +1,6 @@
 //                             CODIGO USUARIO
 package analyzers;
-//import rootcode.*;
+import rootcode.*;
 import java.io.FileReader;
 import java_cup.runtime.Symbol;
 import java.util.LinkedList;
@@ -11,8 +11,33 @@ parser code
 {:
     public String resultado ="";
 
+    //Lista de variables Globaless
+    public LinkedList<Variable> lista_variables = new LinkedList<Variable> ();
+
     //Lista de Errores
     public ArrayList<Esemanticos> ErroresSintacticos = new ArrayList<Esemanticos> ();
+
+    public int getValor(String valor){
+        if(valor.indexOf('.') == -1){  
+            return Integer.parseInt(valor);
+        }else{                          
+            return (int) Double.parseDouble(valor);
+        }
+    }
+
+    public String getTipo(String valor){
+        if(valor.equals("false")){
+            return "Booleano";
+        }else if(valor.equals("true")){
+            return "Booleano";
+        }else if(valor.indexOf('"') >= 0){  //contiene comillas dobles 
+            return "Cadena";
+        }else if(valor.indexOf('.') >= 0){  //contiene un punto decimal
+            return "Decimal";
+        }else{
+            return "Entero";
+        }
+    }
 
     //Metodo al que se llama automaticamente ante algún error sintáctico
     public void syntax_error(Symbol s)
@@ -106,19 +131,19 @@ ATRIBUTO_CUERPO     ::= fondo equal:a cadena:b                                  
                     |   fondo equal:a ddq:b rgb:c ddq:d                                         {: RESULT = "bgcolor" + a + b + c + d; :}
                     ;
 
-CONTENIDO           ::= CONTENIDO:a CONT:b                                                      {: RESULT = a + b; :}
+CONTENIDO           ::= CONTENIDO:a CONT:b                                                      {: RESULT = a + " " + b; :}
                     |   CONT:a                                                                  {: RESULT = a; :}
                     ;
 
 CONT                ::= ESPACIO:a                                                               {: RESULT = a; :}
                     |   PARRAFO:a                                                               {: RESULT = a; :}
-                    |   paragraph
-                    |   open div salto close
-                    |   TEXTOA
-                    |   TEXTOB
-                    |   IMAGEN
-                    |   BOTON
-                    |   TABLA
+                    |   paragraph:a                                                             {: RESULT = a; :}
+                    |   open:a div salto close:c                                                {: RESULT = a + "br" + c + "\n";  :}
+                    |   TEXTOA:a                                                                {: RESULT = a; :}
+                    |   TEXTOB:a                                                                {: RESULT = a; :}
+                    |   IMAGEN:a                                                                {: RESULT = a; :}
+                    |   BOTON:a                                                                 {: RESULT = a; :}
+                    |   TABLA:a                                                                 {: RESULT = a; :}
                     |   SCRIPTHS
                     |   error close
                     ;
@@ -136,10 +161,10 @@ PARRAFO             ::= open:a parrafo ATRIBUTO_PARRA:b close:c PARRA:d open:e d
                                                                                                             d + "\n" +
                                                                                                             e + f + "p" + g + "\n";
                                                                                                 :}
-                    |   open:a parrafo :b PARRA:c open:d div:e parrafo close:f                  {:  
+                    |   open:a parrafo close:b PARRA:c open:d div:e parrafo close:f             {:  
                                                                                                     RESULT = a + "p" + b + "\n" +
                                                                                                             c + "\n" +
-                                                                                                            d + e + "p" + "\n";
+                                                                                                            d + e + "p" + f + "\n";
                                                                                                 :}
                     ;
 
@@ -154,56 +179,73 @@ G                   ::= paragraph:a                                             
 ATRIBUTO_PARRA      ::= alineacion equal:a cadena:b                                             {: RESULT = "align" + a + b; :}
                     ;
 
-TEXTOA              ::= open textoa close PARRA open div textoa close
+TEXTOA              ::= open:a textoa close:b PARRA:c open:d div:e textoa close:f               {: RESULT = a + "h1" + b + c + d + e + "h1" + f; :}
                     ;
 
-TEXTOB              ::= open textob close PARRA open div textob close
+TEXTOB              ::= open:a textob close:b PARRA:c open:d div:e textob close:f               {: RESULT = a + "h2" + b + c + d + e + "h2" + f; :}
                     ;
 
-IMAGEN              ::= open imagen ATRIBUTOS_IMAGEN close open div imagen close
+IMAGEN              ::= open:a imagen ATRIBUTOS_IMAGEN:b close:c open div imagen close          {: RESULT = a + "img" + b + c; :}
                     ;
 
-ATRIBUTOS_IMAGEN    ::= ATRIBUTOS_IMAGEN ATRI_IMAGE
-                    |   ATRI_IMAGE
+ATRIBUTOS_IMAGEN    ::= ATRIBUTOS_IMAGEN:a ATRI_IMAGE:b                                         {: RESULT = a + " " + b; :}
+                    |   ATRI_IMAGE:a                                                            {: RESULT = a; :}
                     ;
 
-ATRI_IMAGE          ::= path equal cadena
-                    |   alto equal numero
-                    |   ancho equal numero
+ATRI_IMAGE          ::= path equal:a cadena:b                                                   {: RESULT = "src" + a + b; :}
+                    |   alto equal:a numero:b                                                   {: RESULT = "height" + a + "\"" + b + "\""; :}
+                    |   ancho equal:a numero:b                                                  {: RESULT = "width" + a + "\"" + b + "\""; :}
                     ;
 
-BOTON               ::= open boton ATRIBUTOS_BOTON close open div boton close
+BOTON               ::= open:a boton ATRIBUTOS_BOTON:b close:c open div boton close             {: RESULT = a + "input type=\"button\"" + " " + b + c; :}
                     ;
 
-ATRIBUTOS_BOTON     ::= ATRIBUTOS_BOTON ATRI_BTN
-                    |   ATRI_BTN
+ATRIBUTOS_BOTON     ::= ATRIBUTOS_BOTON:a ATRI_BTN:b                                            {: RESULT = a + " " + b; :}
+                    |   ATRI_BTN:a                                                              {: RESULT = a; :}
                     ;
 
-ATRI_BTN            ::= id equal cadena
-                    |   texto equal cadena
+ATRI_BTN            ::= id equal:a cadena:b                                                     {: RESULT = "name" + a + b; :}
+                    |   texto equal:a cadena:b                                                  {: RESULT = "value" + a + b; :}
                     ;
 
-TABLA               ::= open tabla ATRIBUTO_TABLA close LISTA_FILAS open div tabla close
-                    |   open tabla close LISTA_FILAS open div tabla close
+TABLA               ::= open:a tabla ATRIBUTO_TABLA:b close:c LISTA_FILAS:d open:e div:f tabla close:g        
+                                                                                                {: 
+                                                                                                    RESULT = a + "TABLE" + " " + b + c + "\n" +
+                                                                                                            d + "\n" +
+                                                                                                            e + f + "TABLE" + g;
+                                                                                                :}
+                    |   open:a tabla close:b LISTA_FILAS:c open:d div:e tabla close:f           {:  
+                                                                                                    RESULT = a + "TABLE" + b + "\n" +
+                                                                                                            c + "\n" +
+                                                                                                            d + e + "TABLE" + f + "\n";
+                                                                                                :}
                     ;
 
-ATRIBUTO_TABLA      ::= borde equal true_
-                    |   borde equal false_
+ATRIBUTO_TABLA      ::= borde equal true_                                                       {: RESULT = "border = \"1\""; :}
+                    |   borde equal false_                                                      {: RESULT = ""; :}
                     ;
 
-LISTA_FILAS         ::= LISTA_FILAS FILA
-                    |   FILA
+LISTA_FILAS         ::= LISTA_FILAS:a FILA:b                                                    {: RESULT = a + b; :}
+                    |   FILA:a                                                                  {: RESULT = a; :}
                     ;
 
-FILA                ::= open fila close LISTA_COLUMNA open div fila close
+FILA                ::= open:a fila close:b LISTA_COLUMNA:c open:d div:e fila close:f           {:  
+                                                                                                    RESULT = a + "tr" + b + "\n" +
+                                                                                                            c + "\n" +
+                                                                                                            d + e + "tr" + f + "\n";
+                                                                                                :}
                     ;
 
-LISTA_COLUMNA       ::= LISTA_COLUMNA COLUMNA
-                    |   COLUMNA
+LISTA_COLUMNA       ::= LISTA_COLUMNA:a COLUMNA:b                                               {: RESULT = a + b; :}
+                    |   COLUMNA:a                                                               {: RESULT = a; :}
                     ;
 
-COLUMNA             ::= open columnac close CONTENIDO open div columnac close
-                    |   open columna close CONTENIDO open div columna close
+COLUMNA             ::= open:a columnac close:b CONTENIDO:c open:d div:e columnac close:f       {: 
+                                                                                                    RESULT = a + "th" + b + c + d + e + "th" + f + "\n";
+                                                                                                :} 
+                    |   open:a columna close:b CONTENIDO:c open:d div:e columna close:f         {:  
+                                                                                                    RESULT = a + "td" + b + c + d + e + "td" + f + "\n";
+                                                                                                :}
                     ;
 
 /***********************************************************************************************************************************************************/
@@ -225,8 +267,12 @@ SCRIPT              ::= DECLARACION
                     |   error semicolon
                     ;
 
-DECLARACION         ::= dolar identificador equal EXP semicolon
-                    |   dolar identificador equal hashtag identificador dot GET semicolon
+DECLARACION         ::= dolar identificador:a equal EXP:b semicolon                             {:
+                                                                                                    String tipo = getTipo(b);
+                                                                                                    Variable v = new Variable(tipo,a, b);
+                                                                                                    lista_variables.add(v);
+                                                                                                :}
+                    |   dolar identificador equal hashtag identificador dot GET semicolon       {::}
                     ;
 
 IMPRESION           ::= echo LISTA_IMPRESION semicolon
@@ -305,28 +351,287 @@ VALOR_BOOLEANO      ::= true_
                     |   dolar identificador 
                     ;
 
-EXP                 ::= EXP or  EXP
-                    |   EXP dot EXP
-                    |   EXP and EXP
-                    |   not EXP
-                    |   EXP mayor EXP
-                    |   EXP menor EXP
-                    |   EXP menorque EXP
-                    |   EXP mayorque EXP
-                    |   EXP diferente EXP
-                    |   EXP igualque EXP
-                    |   EXP plus EXP
-                    |   EXP hypen EXP
-                    |   EXP div EXP
-                    |   EXP asterisk EXP
-                    |   hypen EXP
-                    |   opar EXP cpar
-                    |   VALOR
+EXP                 ::= EXP:a or  EXP:b                 {:
+                                                            boolean val1 = Boolean.parseBoolean(a);
+                                                            boolean val2 = Boolean.parseBoolean(b);
+                                                            boolean r = val1 || val2;
+                                                            RESULT = Boolean.toString(r);
+                                                        :}
+                    |   EXP:a dot EXP:b                 {:
+                                                            String concat = a + b;
+                                                            RESULT = concat;
+                                                        :}
+                    |   EXP:a and EXP:b                 {:
+                                                            boolean val1 = Boolean.parseBoolean(a);
+                                                            boolean val2 = Boolean.parseBoolean(b);
+                                                            boolean r = val1 && val2;
+                                                            RESULT = Boolean.toString(r);
+                                                        :}
+                    |   not EXP:a                       {:
+                                                            boolean val = Boolean.parseBoolean(a);
+                                                            boolean r = !val;
+                                                            RESULT = Boolean.toString(r);
+                                                        :}
+                    |   EXP:a mayor EXP:b               {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 > num2; 
+                                                                RESULT = Boolean.toString(r);  
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }
+                                                        :}
+                    |   EXP:a menor EXP:b               {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 < num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 < num2; 
+                                                                RESULT = Boolean.toString(r);  
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 < num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 < num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }
+                                                        :}
+                    |   EXP:a menorque EXP:b            {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 <= num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 <= num2; 
+                                                                RESULT = Boolean.toString(r);  
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 <= num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 <= num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }
+                                                        :}
+                    |   EXP:a mayorque EXP:b            {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 >= num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 >= num2; 
+                                                                RESULT = Boolean.toString(r);  
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 >= num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 >= num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }
+                                                        :}
+                    |   EXP:a diferente EXP:b           {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 > num2; 
+                                                                RESULT = Boolean.toString(r);  
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }
+                                                        :}
+                    |   EXP:a igualque EXP:b            {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 > num2; 
+                                                                RESULT = Boolean.toString(r);  
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                boolean r = num1 > num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }
+                                                        :}
+                    |   EXP:a plus EXP:b                {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){   //Tipo Entero
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                int sum = num1 + num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){   //Tipo Decimal
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                double sum = num1 + num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else{  //Tipo entero (truncar valores)
+                                                                int num1 = getValor(a);
+                                                                int num2 = getValor(b);
+                                                                int sum = num1 + num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }                         
+                                                        :}
+                    |   EXP:a hypen EXP:b               {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){   //Tipo Entero
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                int sum = num1 - num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){   //Tipo Decimal
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                double sum = num1 - num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else{  //Tipo entero (truncar valores)
+                                                                int num1 = getValor(a);
+                                                                int num2 = getValor(b);
+                                                                int sum = num1 - num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }             
+                                                        :}
+                    |   EXP:a div EXP:b                 {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){   //Tipo Entero
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                int sum = num1 / num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){   //Tipo Decimal
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                double sum = num1 / num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else{  //Tipo entero (truncar valores)
+                                                                int num1 = getValor(a);
+                                                                int num2 = getValor(b);
+                                                                int sum = num1 / num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }             
+                                                        :}
+                    |   EXP:a asterisk EXP:b            {:
+                                                            String tipo1 = getTipo(a);
+                                                            String tipo2 = getTipo(b);
+                                                            if(tipo1.equals("Entero") && tipo2.equals("Entero")){   //Tipo Entero
+                                                                int num1 = Integer.valueOf(a);
+                                                                int num2 = Integer.valueOf(b);
+                                                                int sum = num1 * num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){   //Tipo Decimal
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num2 = Double.parseDouble(b);
+                                                                double sum = num1 * num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }else{  //Tipo entero (truncar valores)
+                                                                int num1 = getValor(a);
+                                                                int num2 = getValor(b);
+                                                                int sum = num1 * num2;
+                                                                RESULT = String.valueOf(sum);
+                                                            }             
+                                                        :}
+                    |   hypen EXP:a                     {:
+                                                            String tipo1 = getTipo(a);
+                                                            if(tipo1.equals("Entero")){
+                                                                int num1 = Integer.valueOf(a);
+                                                                num1 = -1*num1;
+                                                                RESULT = String.valueOf(num1);
+                                                            }else if(tipo1.equals("Decimal")){
+                                                                double num1 = Double.parseDouble(a);
+                                                                double num = -1*num1;
+                                                                RESULT = String.valueOf(num);
+                                                            }
+                                                        :}
+                    |   opar EXP:a cpar                 {:
+                                                            RESULT = a;
+                                                        :}
+                    |   VALOR:a                         {:
+                                                            RESULT = a;
+                                                        :}
                     ;
 
-VALOR               ::= cadena
-                    |   numero
-                    |   true_
-                    |   false_
-                    |   dolar identificador
+VALOR               ::= cadena:a                        {: RESULT = a; :}
+                    |   numero:a                        {: RESULT = a; :}
+                    |   true_:a                         {: RESULT = a; :}
+                    |   false_:a                        {: RESULT = a; :}
+                    |   dolar identificador:a           {: 
+                                                            for(Variable aux: lista_variables){
+                                                                if(aux.nombre.equals(a)){
+                                                                    RESULT = aux.valor;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        :}
                     ;

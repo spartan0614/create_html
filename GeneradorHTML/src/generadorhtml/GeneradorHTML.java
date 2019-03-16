@@ -35,9 +35,6 @@ public class GeneradorHTML {
         
 //        CrearHTML pt = new CrearHTML();
 //        pt.setVisible(true);
-        
-        boolean a = true != false;
-                
     }
     
     public static void generarLexico(String path){

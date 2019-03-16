@@ -14,6 +14,9 @@ parser code
     //Lista de variables Globaless
     public LinkedList<Variable> lista_variables = new LinkedList<Variable> ();
 
+    //Lista de Objetos
+    public LinkedList<Objeto> lista_objetos = new LinkedList<Objeto> ();
+
     //Lista de Errores
     public ArrayList<Esemanticos> ErroresSintacticos = new ArrayList<Esemanticos> ();
 
@@ -36,6 +39,37 @@ parser code
             return "Decimal";
         }else{
             return "Entero";
+        }
+    }
+
+    public void definirFuncion(String id, String definicion){
+        String[] parts = definicion.split("-");
+        parts[0] = parts[0].toLowerCase();
+        switch(parts[0]) {
+            case "crearparrafo":
+                Objeto ob1 = new Objeto("parrafo", id, parts[1]);
+                lista_objetos.add(ob1);
+                break;
+            case "creartextoa":
+                Objeto ob2 = new Objeto("textoa", id, parts[1]);
+                lista_objetos.add(ob2);
+                break;
+            case "creartextob":
+                Objeto ob3 = new Objeto("textob", id, parts[1]);
+                lista_objetos.add(ob3);
+                break;
+            case "crearimagen":
+                Objeto ob4 = new Objeto("imagen", id, parts[1]);
+                lista_objetos.add(ob4);
+                break;
+            case "creartabla":
+                Objeto ob5 = new Objeto("tabla", id, parts[1]);
+                lista_objetos.add(ob5);
+                break;
+            case "crearboton":
+                Objeto ob6 = new Objeto("boton", id, parts[1]);
+                lista_objetos.add(ob6);
+                break;
         }
     }
 
@@ -261,7 +295,9 @@ SCRIPT              ::= DECLARACION
                     |   IMPRESION
                     |   IF
                     |   REPETIR
-                    |   hashtag identificador equal STRUCT semicolon
+                    |   hashtag identificador:a equal STRUCT:b semicolon                        {:
+                                                                                                    definirFuncion(a,b);
+                                                                                                :}
                     |   hashtag identificador dot SET semicolon
                     |   hashtag identificador dot insertar opar cpar semicolon
                     |   error semicolon
@@ -308,13 +344,14 @@ ELSE                ::= cllv else_ ollv CUERPO_SENTENCIA
 REPETIR             ::= repetir opar EXP cpar ollv CUERPO_SENTENCIA cllv
                     ;
 
-STRUCT              ::= crearparrafo opar VALOR_STRING comma cadena cpar
-                    |   creartextoa opar VALOR_STRING cpar 
-                    |   creartextob opar VALOR_STRING cpar 
-                    |   crearimagen opar VALOR_STRING cpar 
-                    |   crearimagen opar VALOR_STRING comma EXP comma EXP cpar 
-                    |   creartabla opar LIST_ROWS cpar 
-                    |   crearboton opar VALOR_STRING comma VALOR_STRING cpar 
+STRUCT              ::= crearparrafo:a opar VALOR_STRING:b comma:c VALOR_STRING:d cpar          {: RESULT = a + "-" + b + c + d; :}
+                    |   crearparrafo:a opar VALOR_STRING:b cpar                                 {: RESULT = a + "-" + b; :}
+                    |   creartextoa:a opar VALOR_STRING:b cpar                                  {: RESULT = a + "-" + b; :}
+                    |   creartextob:a opar VALOR_STRING:b cpar                                  {: RESULT = a + "-" + b; :}
+                    |   crearimagen:a opar VALOR_STRING:b cpar                                  {: RESULT = a + "-" + b; :}
+                    |   crearimagen:a opar VALOR_STRING:b comma:c EXP:d comma:e EXP:f cpar      {: RESULT = a + "-" + b + c + d + e + f; :}
+                    |   creartabla:a opar LIST_ROWS:b cpar                                      {: RESULT = a + "-" + b; :}
+                    |   crearboton:a opar VALOR_STRING:b comma:c VALOR_STRING:d cpar            {: RESULT = a + "-" + b + c + d; :}
                     ;
 
 LIST_ROWS           ::= LIST_ROWS comma ROW
@@ -478,22 +515,27 @@ EXP                 ::= EXP:a or  EXP:b                 {:
                                                             if(tipo1.equals("Entero") && tipo2.equals("Entero")){
                                                                 int num1 = Integer.valueOf(a);
                                                                 int num2 = Integer.valueOf(b);
-                                                                boolean r = num1 > num2;
+                                                                boolean r = num1 != num2;
                                                                 RESULT = Boolean.toString(r);
                                                             }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
                                                                 double num1 = Double.parseDouble(a);
                                                                 double num2 = Double.parseDouble(b);
-                                                                boolean r = num1 > num2; 
+                                                                boolean r = num1 != num2; 
                                                                 RESULT = Boolean.toString(r);  
                                                             }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
                                                                 double num1 = Double.parseDouble(a);
                                                                 int num2 = Integer.valueOf(b);
-                                                                boolean r = num1 > num2;
+                                                                boolean r = num1 != num2;
                                                                 RESULT = Boolean.toString(r);
                                                             }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
                                                                 int num1 = Integer.valueOf(a);
                                                                 double num2 = Double.parseDouble(b);
-                                                                boolean r = num1 > num2;
+                                                                boolean r = num1 != num2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }else if(tipo1.equals("Booleano") && tipo2.equals("Booleano")){
+                                                                boolean val1 = Boolean.parseBoolean(a);
+                                                                boolean val2 = Boolean.parseBoolean(b);
+                                                                boolean r = val1 != val2;
                                                                 RESULT = Boolean.toString(r);
                                                             }
                                                         :}
@@ -503,24 +545,29 @@ EXP                 ::= EXP:a or  EXP:b                 {:
                                                             if(tipo1.equals("Entero") && tipo2.equals("Entero")){
                                                                 int num1 = Integer.valueOf(a);
                                                                 int num2 = Integer.valueOf(b);
-                                                                boolean r = num1 > num2;
+                                                                boolean r = num1 == num2;
                                                                 RESULT = Boolean.toString(r);
                                                             }else if(tipo1.equals("Decimal") && tipo2.equals("Decimal")){
                                                                 double num1 = Double.parseDouble(a);
                                                                 double num2 = Double.parseDouble(b);
-                                                                boolean r = num1 > num2; 
+                                                                boolean r = num1 == num2; 
                                                                 RESULT = Boolean.toString(r);  
                                                             }else if(tipo1.equals("Decimal") && tipo2.equals("Entero")){
                                                                 double num1 = Double.parseDouble(a);
                                                                 int num2 = Integer.valueOf(b);
-                                                                boolean r = num1 > num2;
+                                                                boolean r = num1 == num2;
                                                                 RESULT = Boolean.toString(r);
                                                             }else if(tipo1.equals("Entero") && tipo2.equals("Decimal")){
                                                                 int num1 = Integer.valueOf(a);
                                                                 double num2 = Double.parseDouble(b);
-                                                                boolean r = num1 > num2;
+                                                                boolean r = num1 == num2;
                                                                 RESULT = Boolean.toString(r);
-                                                            }
+                                                            }else if(tipo1.equals("Booleano") && tipo2.equals("Booleano")){
+                                                                boolean val1 = Boolean.parseBoolean(a);
+                                                                boolean val2 = Boolean.parseBoolean(b);
+                                                                boolean r = val1 == val2;
+                                                                RESULT = Boolean.toString(r);
+                                                            }                                                        
                                                         :}
                     |   EXP:a plus EXP:b                {:
                                                             String tipo1 = getTipo(a);

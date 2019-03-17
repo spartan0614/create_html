@@ -73,6 +73,46 @@ parser code
         }
     }
 
+    public String getValorAtributo(String variable, String objeto, String atributo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(objeto)){
+                switch(lista_objetos.get(i).tipo) {
+                    case "parrafo":
+                        if(atributo.equal("getcontenido")){
+                            
+                        }else if(atributo.equal("getalineacion")){
+
+                        }
+                        break;
+                    case "textoa":
+                        if(atributo.equal("getcontenido")){
+
+                        }
+                        break;
+                    case "textob":
+                        if(atributo.equal("getcontenido")){
+
+                        }
+                        break;
+                    case "imagen":
+                        if(atributo.equal("getpath")){
+                            
+                        }else if(atributo.equal("getalto")){
+
+                        }else if(atributo.equal("getancho")){
+
+                        }
+                        break;
+                    case "boton":
+                        if(atributo.equal("gettexto")){
+
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
     //Metodo al que se llama automaticamente ante algún error sintáctico
     public void syntax_error(Symbol s)
     {        
@@ -308,7 +348,9 @@ DECLARACION         ::= dolar identificador:a equal EXP:b semicolon             
                                                                                                     Variable v = new Variable(tipo,a, b);
                                                                                                     lista_variables.add(v);
                                                                                                 :}
-                    |   dolar identificador equal hashtag identificador dot GET semicolon       {::}
+                    |   dolar identificador:a equal hashtag identificador:b dot GET:c semicolon {:
+                                                                                                    getValorAtributo(a,b,c);
+                                                                                                :}
                     ;
 
 IMPRESION           ::= echo LISTA_IMPRESION semicolon
@@ -318,8 +360,8 @@ LISTA_IMPRESION     ::= LISTA_IMPRESION dot VALOR_STRING
                     |   VALOR_STRING
                     ;
 
-VALOR_STRING        ::= cadena
-                    |   dolar identificador
+VALOR_STRING        ::= cadena:a                                                                 {: RESULT = a; :}
+                    |   dolar identificador:a                                                    {: RESULT = a; :}
                     ;
 
 CUERPO_SENTENCIA    ::= CUERPO_SENTENCIA SENTENCIA
@@ -354,15 +396,15 @@ STRUCT              ::= crearparrafo:a opar VALOR_STRING:b comma:c VALOR_STRING:
                     |   crearboton:a opar VALOR_STRING:b comma:c VALOR_STRING:d cpar            {: RESULT = a + "-" + b + c + d; :}
                     ;
 
-LIST_ROWS           ::= LIST_ROWS comma ROW
-                    |   ROW
+LIST_ROWS           ::= LIST_ROWS:a comma:b ROW:c                                               {: RESULT = a + b + c; :}
+                    |   ROW:a                                                                   {: RESULT = a; :}
                     ;
 
-ROW                 ::= ocorch LIST_COLUMN ccorch
+ROW                 ::= ocorch:a LIST_COLUMN:b ccorch:c                                         {: RESULT = a + b + c; :}
                     ;
 
-LIST_COLUMN         ::= LIST_COLUMN comma VALOR
-                    |   VALOR
+LIST_COLUMN         ::= LIST_COLUMN:a comma:b EXP:c                                             {: RESULT = a + b + c; :}
+                    |   EXP:a                                                                   {: RESULT = a; :}
                     ;
 
 SET                 ::= setcontenido opar VALOR_STRING cpar
@@ -375,12 +417,12 @@ SET                 ::= setcontenido opar VALOR_STRING cpar
                     |   clickboton opar VALOR_STRING cpar
                     ;
 
-GET                 ::= getcontenido opar cpar
-                    |   getalineacion opar cpar
-                    |   getpath opar cpar
-                    |   getalto opar cpar
-                    |   getancho opar cpar
-                    |   gettexto opar cpar
+GET                 ::= getcontenido:a opar cpar
+                    |   getalineacion:a opar cpar
+                    |   getpath:a opar cpar
+                    |   getalto:a opar cpar
+                    |   getancho:a opar cpar
+                    |   gettexto:a opar cpar
                     ;
 
 VALOR_BOOLEANO      ::= true_

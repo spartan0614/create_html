@@ -5,8 +5,11 @@
         <group>
             <file>file:/C:/Users/Dinora/Documents/Dinora/Compiladores%201/Compi1/create_html/GeneradorHTML/src/generadorhtml/GeneradorHTML.java</file>
             <file>file:/C:/Users/Dinora/Documents/Dinora/Compiladores%201/Compi1/create_html/GeneradorHTML/src/generadorhtml/CrearHTML.java</file>
+            <file>file:/C:/Users/Dinora/Documents/Dinora/Compiladores%201/Compi1/create_html/GeneradorHTML/src/rootcode/Variable.java</file>
+            <file>file:/C:/Users/Dinora/Documents/Dinora/Compiladores%201/Compi1/create_html/GeneradorHTML/src/analyzers/Scanner.java</file>
             <file>file:/C:/Users/Dinora/Documents/Dinora/Compiladores%201/Compi1/create_html/GeneradorHTML/src/analyzers/Lexer.jflex</file>
             <file>file:/C:/Users/Dinora/Documents/Dinora/Compiladores%201/Compi1/create_html/GeneradorHTML/src/analyzers/Syntactic.cup</file>
+            <file>file:/C:/Users/Dinora/Documents/Dinora/Compiladores%201/Compi1/create_html/GeneradorHTML/src/rootcode/Objeto.java</file>
         </group>
     </open-files>
 </project-private>

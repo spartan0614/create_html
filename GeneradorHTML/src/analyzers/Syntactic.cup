@@ -126,8 +126,85 @@ parser code
         return "";
     }
 
+    public void setContenidoParrafo(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                
+            }
+        }
+    }
+
+    public void setAlineacionParrafo(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setContenidoTextoA(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor = nuevo;
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+
+    public void setContenidoTextoB(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor = nuevo;
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+    
+    public void setPathImagen(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setAltoImagen(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setAnchoImagen(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setBordeTabla(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor += "-true";
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+
+    public void setAlertaBoton(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor += "-" + nuevo;
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+
     public String CrearParrafo(String cadena){
-        if(cadena.indexOf('"') >= 0){   //Contiene alineacion
+        if(cadena.indexOf(',') >= 0){   //Contiene alineacion
             String[] parts = cadena.split(",");
             return "<p align=" + parts[1] + ">" + parts[0] + "</p>";
         }else{                          //No contiene una alineacion
@@ -312,7 +389,7 @@ CONT                ::= ESPACIO:a                                               
                     |   IMAGEN:a                                                                {: RESULT = a; :}
                     |   BOTON:a                                                                 {: RESULT = a; :}
                     |   TABLA:a                                                                 {: RESULT = a; :}
-                    |   SCRIPTHS
+                    |   SCRIPTHS:a                                                              {: RESULT = a; :}
                     |   error close
                     ;
 
@@ -398,9 +475,9 @@ LISTA_FILAS         ::= LISTA_FILAS:a FILA:b                                    
                     ;
 
 FILA                ::= open:a fila close:b LISTA_COLUMNA:c open:d div:e fila close:f           {:  
-                                                                                                    RESULT = a + "tr" + b + "\n" +
-                                                                                                            c + "\n" +
-                                                                                                            d + e + "tr" + f + "\n";
+                                                                                                    RESULT = "\n" + a + "tr" + b + "\n" +
+                                                                                                            c +
+                                                                                                            d + e + "tr" + f;
                                                                                                 :}
                     ;
 
@@ -409,30 +486,71 @@ LISTA_COLUMNA       ::= LISTA_COLUMNA:a COLUMNA:b                               
                     ;
 
 COLUMNA             ::= open:a columnac close:b CONTENIDO:c open:d div:e columnac close:f       {: 
-                                                                                                    RESULT = a + "th" + b + c + d + e + "th" + f + "\n";
+                                                                                                    RESULT = "\n" + a + "th" + b + c + d + e + "th" + f;
                                                                                                 :} 
                     |   open:a columna close:b CONTENIDO:c open:d div:e columna close:f         {:  
-                                                                                                    RESULT = a + "td" + b + c + d + e + "td" + f + "\n";
+                                                                                                    RESULT = "\n" + a + "td" + b + c + d + e + "td" + f;
                                                                                                 :}
                     ;
 
 /***********************************************************************************************************************************************************/
 
-SCRIPTHS            ::= beginHS CUERPO_HSC endHS
+SCRIPTHS            ::= beginHS CUERPO_HSC:a endHS                                              {: RESULT = a; :}
                     ;
 
-CUERPO_HSC          ::= CUERPO_HSC SCRIPT
-                    |   SCRIPT
+CUERPO_HSC          ::= CUERPO_HSC:a SCRIPT:b                                                   {: RESULT = a + " " + b; :}
+                    |   SCRIPT:a                                                                {: RESULT = a; :}
                     ;
 
-SCRIPT              ::= DECLARACION
-                    |   IMPRESION
+SCRIPT              ::= DECLARACION                                                             {: RESULT = ""; :}
+                    |   IMPRESION 
                     |   IF
                     |   REPETIR
                     |   hashtag identificador:a equal STRUCT:b semicolon                        {:
+                                                                                                    RESULT = "";
                                                                                                     definirFuncion(a,b);
                                                                                                 :}
-                    |   hashtag identificador dot SET semicolon
+                    |   hashtag identificador:a dot SET:b semicolon                             {:
+                                                                                                    RESULT = "";
+                                                                                                    String[] parts = b.split("-");    
+                                                                                                    String tipoSet = parts[0].toLowerCase();
+                                                                                                    String valor = parts[1];        
+                                                                                                    for(int i = 0; i < lista_objetos.size(); i++){
+                                                                                                        if(lista_objetos.get(i).nombre.equals(a)){
+                                                                                                            if(lista_objetos.get(i).tipo.equals("parrafo")){
+                                                                                                                if(tipoSet.equals("setcontenido")){
+                                                                                                                    setContenidoParrafo(a, valor);
+                                                                                                                }else if(tipoSet.equals("setalineacion")){
+                                                                                                                    setAlineacionParrafo(a, valor);
+                                                                                                                }
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("textoa")){
+                                                                                                                if(tipoSet.equals("setcontenido")){
+                                                                                                                    setContenidoTextoA(a, valor);
+                                                                                                                }                   
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("textob")){
+                                                                                                                if(tipoSet.equals("setcontenido")){
+                                                                                                                    setContenidoTextoB(a, valor);
+                                                                                                                } 
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("imagen")){
+                                                                                                                if(tipoSet.equals("setpath")){
+                                                                                                                    setPathImagen(a, valor);
+                                                                                                                }else if(tipoSet.equals("setalto")){
+                                                                                                                    setAltoImagen(a, valor);
+                                                                                                                }else if(tipoSet.equals("setancho")){
+                                                                                                                    setAnchoImagen(a, valor);
+                                                                                                                }
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("tabla")){
+                                                                                                                if(tipoSet.equals("setborde")){
+                                                                                                                    setBordeTabla(a, valor);
+                                                                                                                }
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("boton")){
+                                                                                                                if(tipoSet.equals("clickboton")){
+                                                                                                                    setAlertaBoton(a, valor);
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                :}
                     |   hashtag identificador:a dot insertar opar cpar semicolon                {:
                                                                                                     int creado = 0;
                                                                                                     for(int i = 0; i < lista_objetos.size(); i++){
@@ -441,10 +559,10 @@ SCRIPT              ::= DECLARACION
                                                                                                                 RESULT = CrearParrafo(lista_objetos.get(i).valor);
                                                                                                                 creado = 1;
                                                                                                             }else if(lista_objetos.get(i).tipo.equals("textoa")){
-                                                                                                                RESULT = CrearTextoA(lista_objetos.get(i).valor);
+                                                                                                                RESULT = "<h1>" + lista_objetos.get(i).valor.replace("\"", "") + "</h1>\n";
                                                                                                                 creado = 1;
                                                                                                             }else if(lista_objetos.get(i).tipo.equals("textob")){
-                                                                                                                RESULT = CrearTextoB(lista_objetos.get(i).valor);
+                                                                                                                RESULT = "<h2>" + lista_objetos.get(i).valor.replace("\"", "") + "</h2>\n";
                                                                                                                 creado = 1;
                                                                                                             }else if(lista_objetos.get(i).tipo.equals("imagen")){
                                                                                                                 RESULT = CrearImagen(lista_objetos.get(i).valor);
@@ -530,14 +648,14 @@ LIST_COLUMN         ::= LIST_COLUMN:a comma:b EXP:c                             
                     |   EXP:a                                                                   {: RESULT = a; :}
                     ;
 
-SET                 ::= setcontenido opar VALOR_STRING cpar
-                    |   setalineacion opar VALOR_STRING cpar
-                    |   setpath opar VALOR_STRING cpar
-                    |   setalto opar EXP cpar
-                    |   setancho opar EXP cpar
-                    |   setborde opar VALOR_BOOLEANO cpar
-                    |   settexto opar VALOR_STRING cpar
-                    |   clickboton opar VALOR_STRING cpar
+SET                 ::= setcontenido:a opar VALOR_STRING:b cpar                                 {: RESULT = a + "-" + b; :}
+                    |   setalineacion:a opar VALOR_STRING:b cpar                                {: RESULT = a + "-" + b; :}
+                    |   setpath:a opar VALOR_STRING:b cpar                                      {: RESULT = a + "-" + b; :}
+                    |   setalto:a opar EXP:b cpar                                               {: RESULT = a + "-" + b; :}
+                    |   setancho:a opar EXP:b cpar                                              {: RESULT = a + "-" + b; :}
+                    |   setborde:a opar VALOR_BOOLEANO:b cpar                                   {: RESULT = a + "-" + b; :}
+                    |   settexto:a opar VALOR_STRING:b cpar                                     {: RESULT = a + "-" + b; :}
+                    |   clickboton:a opar VALOR_STRING:b cpar                                   {: RESULT = a + "-" + b; :}
                     ;
 
 GET                 ::= getcontenido:a opar cpar                                                {: RESULT = a; :}                             
@@ -548,9 +666,16 @@ GET                 ::= getcontenido:a opar cpar                                
                     |   gettexto:a opar cpar                                                    {: RESULT = a; :}
                     ;
 
-VALOR_BOOLEANO      ::= true_
-                    |   false_
-                    |   dolar identificador 
+VALOR_BOOLEANO      ::= true_:a                                                                 {: RESULT = a; :}
+                    |   false_:a                                                                {: RESULT = a; :}
+                    |   dolar identificador:a                                                   {:  
+                                                                                                    for(Variable aux: lista_variables){
+                                                                                                        if(aux.nombre.equals(a)){
+                                                                                                        RESULT = aux.valor;
+                                                                                                        break;
+                                                                                                        }
+                                                                                                    } 
+                                                                                                :}
                     ;
 
 EXP                 ::= EXP:a or  EXP:b                 {:

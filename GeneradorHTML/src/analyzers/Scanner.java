@@ -751,8 +751,85 @@ public class Scanner extends java_cup.runtime.lr_parser {
         return "";
     }
 
+    public void setContenidoParrafo(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                
+            }
+        }
+    }
+
+    public void setAlineacionParrafo(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setContenidoTextoA(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor = nuevo;
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+
+    public void setContenidoTextoB(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor = nuevo;
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+    
+    public void setPathImagen(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setAltoImagen(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setAnchoImagen(String ide, String nuevo){
+        for(int i = 0; i < lista_objetos.size(); i++){
+
+        }
+    }
+
+    public void setBordeTabla(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor += "-true";
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+
+    public void setAlertaBoton(String ide, String nuevo){
+        int cambio = 0;
+        for(int i = 0; i < lista_objetos.size(); i++){
+            if(lista_objetos.get(i).nombre.equals(ide)){
+                lista_objetos.get(i).valor += "-" + nuevo;
+                cambio = 1;
+            }
+            if(cambio == 1){ break; }
+        }
+    }
+
     public String CrearParrafo(String cadena){
-        if(cadena.indexOf('"') >= 0){   //Contiene alineacion
+        if(cadena.indexOf(',') >= 0){   //Contiene alineacion
             String[] parts = cadena.split(",");
             return "<p align=" + parts[1] + ">" + parts[0] + "</p>";
         }else{                          //No contiene una alineacion
@@ -1226,7 +1303,10 @@ class CUP$Scanner$actions {
           case 19: // CONT ::= SCRIPTHS 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
+		 RESULT = a; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("CONT",6, ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -1757,9 +1837,9 @@ class CUP$Scanner$actions {
 		int fright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
 		String f = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
 		  
-                                                                                                    RESULT = a + "tr" + b + "\n" +
-                                                                                                            c + "\n" +
-                                                                                                            d + e + "tr" + f + "\n";
+                                                                                                    RESULT = "\n" + a + "tr" + b + "\n" +
+                                                                                                            c +
+                                                                                                            d + e + "tr" + f;
                                                                                                 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("FILA",22, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-7)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
@@ -1815,7 +1895,7 @@ class CUP$Scanner$actions {
 		int fright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
 		String f = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
 		 
-                                                                                                    RESULT = a + "th" + b + c + d + e + "th" + f + "\n";
+                                                                                                    RESULT = "\n" + a + "th" + b + c + d + e + "th" + f;
                                                                                                 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("COLUMNA",24, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-7)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
@@ -1844,7 +1924,7 @@ class CUP$Scanner$actions {
 		int fright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
 		String f = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
 		  
-                                                                                                    RESULT = a + "td" + b + c + d + e + "td" + f + "\n";
+                                                                                                    RESULT = "\n" + a + "td" + b + c + d + e + "td" + f;
                                                                                                 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("COLUMNA",24, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-7)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
@@ -1854,7 +1934,10 @@ class CUP$Scanner$actions {
           case 53: // SCRIPTHS ::= beginHS CUERPO_HSC endHS 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SCRIPTHS",25, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-2)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -1863,7 +1946,13 @@ class CUP$Scanner$actions {
           case 54: // CUERPO_HSC ::= CUERPO_HSC SCRIPT 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
+		 RESULT = a + " " + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("CUERPO_HSC",26, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -1872,7 +1961,10 @@ class CUP$Scanner$actions {
           case 55: // CUERPO_HSC ::= SCRIPT 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
+		 RESULT = a; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("CUERPO_HSC",26, ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -1881,7 +1973,7 @@ class CUP$Scanner$actions {
           case 56: // SCRIPT ::= DECLARACION 
             {
               String RESULT =null;
-
+		 RESULT = ""; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SCRIPT",27, ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -1924,6 +2016,7 @@ class CUP$Scanner$actions {
 		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
 		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
 		
+                                                                                                    RESULT = "";
                                                                                                     definirFuncion(a,b);
                                                                                                 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SCRIPT",27, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-4)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
@@ -1934,7 +2027,53 @@ class CUP$Scanner$actions {
           case 61: // SCRIPT ::= hashtag identificador dot SET semicolon 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		
+                                                                                                    RESULT = "";
+                                                                                                    String[] parts = b.split("-");    
+                                                                                                    String tipoSet = parts[0].toLowerCase();
+                                                                                                    String valor = parts[1];        
+                                                                                                    for(int i = 0; i < lista_objetos.size(); i++){
+                                                                                                        if(lista_objetos.get(i).nombre.equals(a)){
+                                                                                                            if(lista_objetos.get(i).tipo.equals("parrafo")){
+                                                                                                                if(tipoSet.equals("setcontenido")){
+                                                                                                                    setContenidoParrafo(a, valor);
+                                                                                                                }else if(tipoSet.equals("setalineacion")){
+                                                                                                                    setAlineacionParrafo(a, valor);
+                                                                                                                }
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("textoa")){
+                                                                                                                if(tipoSet.equals("setcontenido")){
+                                                                                                                    setContenidoTextoA(a, valor);
+                                                                                                                }                   
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("textob")){
+                                                                                                                if(tipoSet.equals("setcontenido")){
+                                                                                                                    setContenidoTextoB(a, valor);
+                                                                                                                } 
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("imagen")){
+                                                                                                                if(tipoSet.equals("setpath")){
+                                                                                                                    setPathImagen(a, valor);
+                                                                                                                }else if(tipoSet.equals("setalto")){
+                                                                                                                    setAltoImagen(a, valor);
+                                                                                                                }else if(tipoSet.equals("setancho")){
+                                                                                                                    setAnchoImagen(a, valor);
+                                                                                                                }
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("tabla")){
+                                                                                                                if(tipoSet.equals("setborde")){
+                                                                                                                    setBordeTabla(a, valor);
+                                                                                                                }
+                                                                                                            }else if(lista_objetos.get(i).tipo.equals("boton")){
+                                                                                                                if(tipoSet.equals("clickboton")){
+                                                                                                                    setAlertaBoton(a, valor);
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SCRIPT",27, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-4)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -1954,10 +2093,10 @@ class CUP$Scanner$actions {
                                                                                                                 RESULT = CrearParrafo(lista_objetos.get(i).valor);
                                                                                                                 creado = 1;
                                                                                                             }else if(lista_objetos.get(i).tipo.equals("textoa")){
-                                                                                                                RESULT = CrearTextoA(lista_objetos.get(i).valor);
+                                                                                                                RESULT = "<h1>" + lista_objetos.get(i).valor.replace("\"", "") + "</h1>\n";
                                                                                                                 creado = 1;
                                                                                                             }else if(lista_objetos.get(i).tipo.equals("textob")){
-                                                                                                                RESULT = CrearTextoB(lista_objetos.get(i).valor);
+                                                                                                                RESULT = "<h2>" + lista_objetos.get(i).valor.replace("\"", "") + "</h2>\n";
                                                                                                                 creado = 1;
                                                                                                             }else if(lista_objetos.get(i).tipo.equals("imagen")){
                                                                                                                 RESULT = CrearImagen(lista_objetos.get(i).valor);
@@ -2395,7 +2534,13 @@ class CUP$Scanner$actions {
           case 94: // SET ::= setcontenido opar VALOR_STRING cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2404,7 +2549,13 @@ class CUP$Scanner$actions {
           case 95: // SET ::= setalineacion opar VALOR_STRING cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2413,7 +2564,13 @@ class CUP$Scanner$actions {
           case 96: // SET ::= setpath opar VALOR_STRING cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2422,7 +2579,13 @@ class CUP$Scanner$actions {
           case 97: // SET ::= setalto opar EXP cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2431,7 +2594,13 @@ class CUP$Scanner$actions {
           case 98: // SET ::= setancho opar EXP cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2440,7 +2609,13 @@ class CUP$Scanner$actions {
           case 99: // SET ::= setborde opar VALOR_BOOLEANO cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2449,7 +2624,13 @@ class CUP$Scanner$actions {
           case 100: // SET ::= settexto opar VALOR_STRING cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2458,7 +2639,13 @@ class CUP$Scanner$actions {
           case 101: // SET ::= clickboton opar VALOR_STRING cpar 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
+		 RESULT = a + "-" + b; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("SET",40, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-3)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2539,7 +2726,10 @@ class CUP$Scanner$actions {
           case 108: // VALOR_BOOLEANO ::= true_ 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
+		 RESULT = a; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("VALOR_BOOLEANO",42, ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2548,7 +2738,10 @@ class CUP$Scanner$actions {
           case 109: // VALOR_BOOLEANO ::= false_ 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
+		 RESULT = a; 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("VALOR_BOOLEANO",42, ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2557,7 +2750,17 @@ class CUP$Scanner$actions {
           case 110: // VALOR_BOOLEANO ::= dolar identificador 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
+		  
+                                                                                                    for(Variable aux: lista_variables){
+                                                                                                        if(aux.nombre.equals(a)){
+                                                                                                        RESULT = aux.valor;
+                                                                                                        break;
+                                                                                                        }
+                                                                                                    } 
+                                                                                                
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("VALOR_BOOLEANO",42, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;

@@ -255,16 +255,15 @@ public class CrearHTML extends javax.swing.JFrame {
              
            //Crear archivo HTML 
            EscribirHTML(sintactico.resultado);
-           System.out.println("objetos\n");
-           //Objetos
-           for(int i = 0; i < sintactico.lista_objetos.size(); i++){
-               System.out.println(sintactico.lista_objetos.get(i).tipo + " " + sintactico.lista_objetos.get(i).nombre + " " + sintactico.lista_objetos.get(i).valor);
-           }
-           System.out.println("Variables\n");
-           //Variables
-           for(int i = 0; i < sintactico.lista_variables.size(); i++){
-               System.out.println(sintactico.lista_variables.get(i).tipo + " " + sintactico.lista_variables.get(i).nombre + " " + sintactico.lista_variables.get(i).valor);
-           }
+          
+//           //Objetos
+//           for(int i = 0; i < sintactico.lista_objetos.size(); i++){
+//               System.out.println(sintactico.lista_objetos.get(i).tipo + " " + sintactico.lista_objetos.get(i).nombre + " " + sintactico.lista_objetos.get(i).valor);
+//           }
+//           //Variables
+//           for(int i = 0; i < sintactico.lista_variables.size(); i++){
+//               System.out.println(sintactico.lista_variables.get(i).tipo + " " + sintactico.lista_variables.get(i).nombre + " " + sintactico.lista_variables.get(i).valor);
+//           }
            
            
         }catch (Exception ex){

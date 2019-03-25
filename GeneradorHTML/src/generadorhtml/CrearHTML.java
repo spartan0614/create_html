@@ -22,18 +22,21 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Dinora
  */
 public class CrearHTML extends javax.swing.JFrame {
-
+    DefaultTableModel model;
     /**
      * Creates new form crearHTML
      */
     public CrearHTML() {
         initComponents();
+        
+        model = (DefaultTableModel) jTable1.getModel();
     }
 
     public void EscribirHTML(String contenido) throws FileNotFoundException, IOException{
@@ -129,20 +132,11 @@ public class CrearHTML extends javax.swing.JFrame {
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setBackground(new java.awt.Color(0, 51, 51));
+        jTable1.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
         jTable1.setForeground(new java.awt.Color(0, 0, 0));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "ID", "TIPO", "VALOR", "LINEA", "COLUMNA"
@@ -247,23 +241,32 @@ public class CrearHTML extends javax.swing.JFrame {
 //           Scanner sintactico = new Scanner(new Parser(new BufferedReader(new StringReader(jTextAreaEditor.getText()))));
            sintactico.parse();
            
-//           Symbol s = (Symbol)lexico.next_token();  //Obtiene el primer token
-//           while(s.sym != 0){       //Si el token no es error... analizar
-//               System.out.println("Lexema: " + s.value + " Token: " + s.sym);
-//               s = (Symbol)lexico.next_token();
-//           }
+           /*Reporte de los tokens reconocidos durante el analisis*/
+           Symbol s = (Symbol)lexico.next_token();  //Obtiene el primer token
+           while(s.sym != 0){       //Si el token no es error... analizar
+               System.out.println("Lexema: " + s.value + " Token: " + s.sym);
+               s = (Symbol)lexico.next_token();
+           }
              
-           //Crear archivo HTML 
+           /*Creando archivo HTML resultante*/
            EscribirHTML(sintactico.resultado);
           
 //           //Objetos
 //           for(int i = 0; i < sintactico.lista_objetos.size(); i++){
 //               System.out.println(sintactico.lista_objetos.get(i).tipo + " " + sintactico.lista_objetos.get(i).nombre + " " + sintactico.lista_objetos.get(i).valor);
 //           }
-//           //Variables
-//           for(int i = 0; i < sintactico.lista_variables.size(); i++){
-//               System.out.println(sintactico.lista_variables.get(i).tipo + " " + sintactico.lista_variables.get(i).nombre + " " + sintactico.lista_variables.get(i).valor);
-//           }
+
+           
+           /*Llenando la tabla de las variables */
+           for(int i = 0; i < sintactico.lista_variables.size(); i++){
+               model.insertRow(model.getRowCount(), new Object[]{ sintactico.lista_variables.get(i).nombre, 
+                                                                     sintactico.lista_variables.get(i).tipo,
+                                                                     sintactico.lista_variables.get(i).valor,
+                                                                     0,
+                                                                     0});
+           }
+           
+           
            
            
         }catch (Exception ex){

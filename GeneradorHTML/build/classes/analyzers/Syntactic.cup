@@ -134,9 +134,9 @@ parser code
        #################################################################################################################*/
 
     public String setContenidoParrafo(String actual, String nuevo){
-        if(actual.indexOf(',') >= 0){   //Hay alineacion, se debe separar
-            String[] parts = actual.split(",");
-            String nuevo_valor = nuevo + "," + parts[1];
+        if(actual.indexOf('@') >= 0){   //Hay alineacion, se debe separar
+            String[] parts = actual.split("@");
+            String nuevo_valor = nuevo + "@" + parts[1];
             return nuevo_valor;
         }else{
             return nuevo;
@@ -144,12 +144,12 @@ parser code
     }
 
     public String setAlineacionParrafo(String actual, String nuevo){
-        if(actual.indexOf(',') >= 0){   //Hay alineacion
-            String[] parts = actual.split(",");
-            String nuevo_valor = parts[0] + "," + nuevo;
+        if(actual.indexOf('@') >= 0){   //Hay alineacion
+            String[] parts = actual.split("@");
+            String nuevo_valor = parts[0] + "@" + nuevo;
             return nuevo_valor;
         }else{  //No hay alineación, solo se agrega
-            return actual + "," + nuevo;
+            return actual + "@" + nuevo;
         }
     }
     
@@ -568,6 +568,7 @@ DECLARACION         ::= dolar identificador:a equal EXP:b semicolon             
                                                                                                         }
                                                                                                         if(encontrado == 1){ break; }
                                                                                                     } 
+
                                                                                                     if(encontrado == 0){
                                                                                                         Variable v = new Variable(tipo,a, b);
                                                                                                         lista_variables.add(v);
@@ -576,8 +577,20 @@ DECLARACION         ::= dolar identificador:a equal EXP:b semicolon             
                     |   dolar identificador:a equal hashtag identificador:b dot GET:c semicolon {:
                                                                                                     String valor = getValorAtributo(b,c);
                                                                                                     String tipo = getTipo(valor);
-                                                                                                    Variable v = new Variable(tipo,a,valor);
-                                                                                                    lista_variables.add(v);
+                                                                                                    int encontrado = 0;
+                                                                                                    for(Variable aux: lista_variables){
+                                                                                                        if(aux.nombre.equals(a)){
+                                                                                                            aux.tipo = tipo;
+                                                                                                            aux.valor = valor;
+                                                                                                            encontrado = 1;
+                                                                                                        }
+                                                                                                        if(encontrado == 1){ break; }
+                                                                                                    } 
+                                                                                                    
+                                                                                                    if(encontrado == 0){
+                                                                                                        Variable v = new Variable(tipo,a,valor);
+                                                                                                        lista_variables.add(v);
+                                                                                                    }
                                                                                                 :}
                     ;
 
@@ -622,7 +635,7 @@ ELSE                ::= cllv else_ ollv CUERPO_SENTENCIA
 REPETIR             ::= repetir opar EXP cpar ollv CUERPO_SENTENCIA cllv
                     ;
 
-STRUCT              ::= crearparrafo:a opar VALOR_STRING:b comma VALOR_STRING:d cpar          {: RESULT = a + "-" + b + "@" + d; :}
+STRUCT              ::= crearparrafo:a opar VALOR_STRING:b comma VALOR_STRING:d cpar            {: RESULT = a + "-" + b + "@" + d; :}
                     |   crearparrafo:a opar VALOR_STRING:b cpar                                 {: RESULT = a + "-" + b; :}
                     |   creartextoa:a opar VALOR_STRING:b cpar                                  {: RESULT = a + "-" + b; :}
                     |   creartextob:a opar VALOR_STRING:b cpar                                  {: RESULT = a + "-" + b; :}

@@ -767,9 +767,9 @@ public class Scanner extends java_cup.runtime.lr_parser {
        #################################################################################################################*/
 
     public String setContenidoParrafo(String actual, String nuevo){
-        if(actual.indexOf(',') >= 0){   //Hay alineacion, se debe separar
-            String[] parts = actual.split(",");
-            String nuevo_valor = nuevo + "," + parts[1];
+        if(actual.indexOf('@') >= 0){   //Hay alineacion, se debe separar
+            String[] parts = actual.split("@");
+            String nuevo_valor = nuevo + "@" + parts[1];
             return nuevo_valor;
         }else{
             return nuevo;
@@ -777,12 +777,12 @@ public class Scanner extends java_cup.runtime.lr_parser {
     }
 
     public String setAlineacionParrafo(String actual, String nuevo){
-        if(actual.indexOf(',') >= 0){   //Hay alineacion
-            String[] parts = actual.split(",");
-            String nuevo_valor = parts[0] + "," + nuevo;
+        if(actual.indexOf('@') >= 0){   //Hay alineacion
+            String[] parts = actual.split("@");
+            String nuevo_valor = parts[0] + "@" + nuevo;
             return nuevo_valor;
         }else{  //No hay alineación, solo se agrega
-            return actual + "," + nuevo;
+            return actual + "@" + nuevo;
         }
     }
     
@@ -2121,8 +2121,20 @@ class CUP$Scanner$actions {
 		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.elementAt(CUP$Scanner$top-1)).value;
 		
                                                                                                     String tipo = getTipo(b);
-                                                                                                    Variable v = new Variable(tipo,a, b);
-                                                                                                    lista_variables.add(v);
+                                                                                                    int encontrado = 0;
+                                                                                                    for(Variable aux: lista_variables){
+                                                                                                        if(aux.nombre.equals(a)){
+                                                                                                            aux.tipo = tipo;
+                                                                                                            aux.valor = b;
+                                                                                                            encontrado = 1;
+                                                                                                        }
+                                                                                                        if(encontrado == 1){ break; }
+                                                                                                    } 
+
+                                                                                                    if(encontrado == 0){
+                                                                                                        Variable v = new Variable(tipo,a, b);
+                                                                                                        lista_variables.add(v);
+                                                                                                    }
                                                                                                 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("DECLARACION",28, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-4)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
@@ -2144,8 +2156,20 @@ class CUP$Scanner$actions {
 		
                                                                                                     String valor = getValorAtributo(b,c);
                                                                                                     String tipo = getTipo(valor);
-                                                                                                    Variable v = new Variable(tipo,a,valor);
-                                                                                                    lista_variables.add(v);
+                                                                                                    int encontrado = 0;
+                                                                                                    for(Variable aux: lista_variables){
+                                                                                                        if(aux.nombre.equals(a)){
+                                                                                                            aux.tipo = tipo;
+                                                                                                            aux.valor = valor;
+                                                                                                            encontrado = 1;
+                                                                                                        }
+                                                                                                        if(encontrado == 1){ break; }
+                                                                                                    } 
+                                                                                                    
+                                                                                                    if(encontrado == 0){
+                                                                                                        Variable v = new Variable(tipo,a,valor);
+                                                                                                        lista_variables.add(v);
+                                                                                                    }
                                                                                                 
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("DECLARACION",28, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-7)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }

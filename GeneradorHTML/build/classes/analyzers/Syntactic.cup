@@ -10,6 +10,7 @@ import java.util.ArrayList;
 parser code
 {:
     public String resultado ="";
+    public String consola = "";
 
     //Lista de variables Globaless
     public LinkedList<Variable> lista_variables = new LinkedList<Variable> ();
@@ -356,7 +357,28 @@ BODY                ::= open:a cuerpo ATRIBUTO_CUERPO:b close:c CONTENIDO:d open
                                                                                                 :}
                     ;
 
-ATRIBUTO_CUERPO     ::= fondo equal:a cadena:b                                                  {: RESULT = "bgcolor" + a + b; :}                                                              
+ATRIBUTO_CUERPO     ::= fondo equal:a cadena:b                                                  {: 
+                                                                                                    String X = b.replace("\"", "");
+                                                                                                    String color;
+                                                                                                    switch(X.toLowerCase()) {
+                                                                                                        case "rojo":
+                                                                                                            color = "red";
+                                                                                                            break;
+                                                                                                        case "amarillo":
+                                                                                                            color = "yellow";
+                                                                                                            break;
+                                                                                                        case "azul":
+                                                                                                            color = "blue";
+                                                                                                            break;
+                                                                                                        case "verde":
+                                                                                                            color = "green";
+                                                                                                            break;
+                                                                                                        default:
+                                                                                                            color = "white";
+                                                                                                            break;
+                                                                                                    }
+                                                                                                    RESULT = "bgcolor" + a + "\"" + color + "\""; 
+                                                                                                :}                                                              
                     |   fondo equal:a ddq:b rgb:c ddq:d                                         {: RESULT = "bgcolor" + a + b + c + d; :}
                     ;
 
@@ -405,7 +427,29 @@ G                   ::= paragraph:a                                             
                     |   open:a div salto close:c                                                {: RESULT = a + "br" + c + "\n"; :}
                     ;
                     
-ATRIBUTO_PARRA      ::= alineacion equal:a cadena:b                                             {: RESULT = "align" + a + b; :}
+ATRIBUTO_PARRA      ::= alineacion equal:a cadena:b                                             {: 
+                                                                                                    String X = b.replace("\"", "");
+                                                                                                    String ali;
+                                                                                                    switch(X.toLowerCase()) {
+                                                                                                        case "izquierda":
+                                                                                                            ali = "left";
+                                                                                                            break;
+                                                                                                        case "derecha":
+                                                                                                            ali = "right";
+                                                                                                            break;
+                                                                                                        case "centrado":
+                                                                                                            ali = "center";
+                                                                                                            break;
+                                                                                                        case "justificado":
+                                                                                                            ali = "justify";
+                                                                                                            break;
+                                                                                                        default:
+                                                                                                            ali = "center";
+                                                                                                            break;
+                                                                                                    }
+
+                                                                                                    RESULT = "align" + a + "\"" + ali + "\""; 
+                                                                                                :}
                     ;
 
 TEXTOA              ::= open:a textoa close:b PARRA:c open:d div:e textoa close:f               {: RESULT = a + "h1" + b + c + d + e + "h1" + f; :}
@@ -487,7 +531,10 @@ CUERPO_HSC          ::= CUERPO_HSC:a SCRIPT:b                                   
                     ;
 
 SCRIPT              ::= DECLARACION                                                 {: RESULT = ""; :}
-                    |   IMPRESION 
+                    |   IMPRESION:a                                                 {: 
+                                                                                        RESULT = "";
+                                                                                        consola = a; 
+                                                                                    :} 
                     |   IF
                     |   REPETIR
                     |   hashtag identificador:a equal STRUCT:b semicolon            {:
@@ -570,7 +617,7 @@ DECLARACION         ::= dolar identificador:a equal EXP:b semicolon             
                                                                                                     } 
 
                                                                                                     if(encontrado == 0){
-                                                                                                        Variable v = new Variable(tipo,a, b);
+                                                                                                        Variable v = new Variable(tipo,a, b, String.valueOf(aleft),String.valueOf(aright));
                                                                                                         lista_variables.add(v);
                                                                                                     }
                                                                                                 :}
@@ -588,17 +635,17 @@ DECLARACION         ::= dolar identificador:a equal EXP:b semicolon             
                                                                                                     } 
                                                                                                     
                                                                                                     if(encontrado == 0){
-                                                                                                        Variable v = new Variable(tipo,a,valor);
+                                                                                                        Variable v = new Variable(tipo,a,valor,String.valueOf(aleft),String.valueOf(aright));
                                                                                                         lista_variables.add(v);
                                                                                                     }
                                                                                                 :}
                     ;
 
-IMPRESION           ::= echo LISTA_IMPRESION semicolon
+IMPRESION           ::= echo LISTA_IMPRESION:a semicolon                                        {: RESULT = a;  :}
                     ;
 
 LISTA_IMPRESION     ::= LISTA_IMPRESION:a dot VALOR_STRING:b                                    {: RESULT = a + b; :}
-                    |   VALOR_STRING:a                                                          {: RESULT = a; :}
+                    |   VALOR_STRING:a                                                          {: RESULT = a.replace("\"", ""); :}
                     ;
 
 VALOR_STRING        ::= cadena:a                                                                {: RESULT = a; :}

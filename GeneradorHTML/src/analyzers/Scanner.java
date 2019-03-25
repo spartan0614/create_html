@@ -1127,7 +1127,28 @@ class CUP$Scanner$actions {
 		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
 		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
-		 RESULT = "bgcolor" + a + b; 
+		 
+                                                                                                    String X = b.replace("\"", "");
+                                                                                                    String color;
+                                                                                                    switch(X.toLowerCase()) {
+                                                                                                        case "rojo":
+                                                                                                            color = "red";
+                                                                                                            break;
+                                                                                                        case "amarillo":
+                                                                                                            color = "yellow";
+                                                                                                            break;
+                                                                                                        case "azul":
+                                                                                                            color = "blue";
+                                                                                                            break;
+                                                                                                        case "verde":
+                                                                                                            color = "green";
+                                                                                                            break;
+                                                                                                        default:
+                                                                                                            color = "white";
+                                                                                                            break;
+                                                                                                    }
+                                                                                                    RESULT = "bgcolor" + a + "\"" + color + "\""; 
+                                                                                                
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("ATRIBUTO_CUERPO",4, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-2)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -1472,7 +1493,29 @@ class CUP$Scanner$actions {
 		int bleft = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()).right;
 		String b = (String)((java_cup.runtime.Symbol) CUP$Scanner$stack.peek()).value;
-		 RESULT = "align" + a + b; 
+		 
+                                                                                                    String X = b.replace("\"", "");
+                                                                                                    String ali;
+                                                                                                    switch(X.toLowerCase()) {
+                                                                                                        case "izquierda":
+                                                                                                            ali = "left";
+                                                                                                            break;
+                                                                                                        case "derecha":
+                                                                                                            ali = "right";
+                                                                                                            break;
+                                                                                                        case "centrado":
+                                                                                                            ali = "center";
+                                                                                                            break;
+                                                                                                        case "justificado":
+                                                                                                            ali = "justify";
+                                                                                                            break;
+                                                                                                        default:
+                                                                                                            ali = "center";
+                                                                                                            break;
+                                                                                                    }
+
+                                                                                                    RESULT = "align" + a + "\"" + ali + "\""; 
+                                                                                                
               CUP$Scanner$result = parser.getSymbolFactory().newSymbol("ATRIBUTO_PARRA",9, ((java_cup.runtime.Symbol)CUP$Scanner$stack.elementAt(CUP$Scanner$top-2)), ((java_cup.runtime.Symbol)CUP$Scanner$stack.peek()), RESULT);
             }
           return CUP$Scanner$result;
@@ -2132,7 +2175,7 @@ class CUP$Scanner$actions {
                                                                                                     } 
 
                                                                                                     if(encontrado == 0){
-                                                                                                        Variable v = new Variable(tipo,a, b);
+                                                                                                        Variable v = new Variable(tipo,a, b, String.valueOf(aleft),String.valueOf(aright));
                                                                                                         lista_variables.add(v);
                                                                                                     }
                                                                                                 
@@ -2167,7 +2210,7 @@ class CUP$Scanner$actions {
                                                                                                     } 
                                                                                                     
                                                                                                     if(encontrado == 0){
-                                                                                                        Variable v = new Variable(tipo,a,valor);
+                                                                                                        Variable v = new Variable(tipo,a,valor,String.valueOf(aleft),String.valueOf(aright));
                                                                                                         lista_variables.add(v);
                                                                                                     }
                                                                                                 

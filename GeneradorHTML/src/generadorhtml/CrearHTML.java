@@ -83,6 +83,15 @@ public class CrearHTML extends javax.swing.JFrame {
         }
     }
     
+    public void CreateHTMLTokens(String cuerpo) throws FileNotFoundException, IOException{
+        try(Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("tokens.html"),"utf-8"))){
+            writer.write(cuerpo);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(CrearHTML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void CreateHTMLErrores(ArrayList<Esemanticos> erroresLexicos, ArrayList<Esemanticos> erroresSintacticos) throws FileNotFoundException, IOException{
         try(Writer writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream("errores.html"),"utf-8"))){
@@ -166,6 +175,10 @@ public class CrearHTML extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         btnPaginaResultante = new javax.swing.JButton();
         btnListaErrores = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextHTML = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        btnTokens = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -198,7 +211,7 @@ public class CrearHTML extends javax.swing.JFrame {
 
         jTextAreaEditor.setBackground(new java.awt.Color(0, 51, 51));
         jTextAreaEditor.setColumns(20);
-        jTextAreaEditor.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        jTextAreaEditor.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         jTextAreaEditor.setForeground(new java.awt.Color(255, 255, 255));
         jTextAreaEditor.setRows(5);
         jTextAreaEditor.setBorder(null);
@@ -217,7 +230,7 @@ public class CrearHTML extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 902, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,7 +262,7 @@ public class CrearHTML extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 902, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,7 +272,7 @@ public class CrearHTML extends javax.swing.JFrame {
         jTabbedPane1.addTab("Variables", jPanel3);
 
         btnPaginaResultante.setBackground(new java.awt.Color(204, 102, 0));
-        btnPaginaResultante.setText("Ver página web resultante");
+        btnPaginaResultante.setText("Página web resultante");
         btnPaginaResultante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPaginaResultanteActionPerformed(evt);
@@ -274,36 +287,70 @@ public class CrearHTML extends javax.swing.JFrame {
             }
         });
 
+        jTextHTML.setBackground(new java.awt.Color(0, 51, 51));
+        jTextHTML.setColumns(20);
+        jTextHTML.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
+        jTextHTML.setForeground(new java.awt.Color(255, 255, 255));
+        jTextHTML.setRows(5);
+        jScrollPane4.setViewportView(jTextHTML);
+
+        jLabel1.setText("Pagina HTML");
+
+        btnTokens.setBackground(new java.awt.Color(204, 102, 0));
+        btnTokens.setText("Tokens");
+        btnTokens.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTokensActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jTabbedPane1)
                     .addComponent(jScrollPane1))
-                .addGap(28, 28, 28)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnCompilar, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                    .addComponent(btnPaginaResultante, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnListaErrores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(btnCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addComponent(btnPaginaResultante)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnListaErrores, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTokens, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnCompilar)
-                        .addGap(21, 21, 21)
-                        .addComponent(btnPaginaResultante)
-                        .addGap(22, 22, 22)
-                        .addComponent(btnListaErrores)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTabbedPane1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCompilar)
+                            .addComponent(btnPaginaResultante)
+                            .addComponent(btnListaErrores)
+                            .addComponent(btnTokens))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addGap(10, 10, 10)
+                        .addComponent(jScrollPane4)))
                 .addContainerGap())
         );
 
@@ -357,7 +404,9 @@ public class CrearHTML extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -372,9 +421,61 @@ public class CrearHTML extends javax.swing.JFrame {
            StringReader sr = new StringReader(jTextAreaEditor.getText());
            BufferedReader bf = new BufferedReader(sr);
            Parser lexico = new Parser(bf);
+           
            Scanner sintactico = new Scanner(lexico);
 //           Scanner sintactico = new Scanner(new Parser(new BufferedReader(new StringReader(jTextAreaEditor.getText()))));
            sintactico.parse();
+           
+           
+           /*Reporte de Tokens*/
+                String cuerpo = "";
+        
+        cuerpo += "<html>\n" +
+                    "<head>\n"+
+                        "<title>Tokens</title>\n"+
+                            "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.min.css\">\n"+
+                    "</head>\n" +
+                    "<body>\n" +
+                        "<table class=\"table\">\n" +
+                            "<thead class=\"thead-dark\">\n"+
+                                "<tr>\n" +
+                                    "<th scope=\"col\">Token</th>\n" +
+                                    "<th scope=\"col\">Lexema</th>\n"+
+                                    "<th scope=\"col\">Fila</th>\n"+
+                                    "<th scope=\"col\">Columna</th>\n"+
+                                "</tr>\n"+
+                            "</thead>\n"+
+                            "<tbody>\n";
+                                //TOKENS
+                            try{
+                                Symbol s = (Symbol)lexico.next_token();  //Obtiene el primer token
+                                    while(s.sym != 0){       //Si el token no es error... analizar
+                                        cuerpo += "<tr>\n";
+                                        cuerpo += "<td>"+ s.sym +"</td>\n";
+                                        cuerpo += "<td>"+ s.value +"</td>\n";
+                                        cuerpo += "<td>"+ s.left +"</td>\n";
+                                        cuerpo += "<td>"+ s.right +"</td>\n";
+                                        cuerpo += "</tr>\n";
+                                        s = (Symbol)lexico.next_token();
+                                    }
+                            }catch (Exception ex){
+                                Logger.getLogger(CrearHTML.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                                
+        cuerpo +=           "</tbody>\n"+
+                        "</table>\n"+
+                        "<script type=\"text/javascript\" src=\"bootstrap.min.js\"></script>\n"+
+                    "</body>\n" +
+                "</html>\n";
+        
+                CreateHTMLTokens(cuerpo);
+            
+           
+           
+           
+           
+           
+           
            
            /*Verificando Errores*/
            if(lexico.ErroresLexicos.size() > 0 || sintactico.ErroresSintacticos.size() > 0){
@@ -386,6 +487,9 @@ public class CrearHTML extends javax.swing.JFrame {
                 
                 /*Creando archivo HTML resultante*/
                 EscribirHTML(sintactico.resultado);
+                
+                /*Mostrando pagina HTML*/
+                this.jTextHTML.append(sintactico.resultado);
                      
                 /*Llenando la tabla de las variables */
                 for(int i = 0; i < sintactico.lista_variables.size(); i++){
@@ -395,14 +499,13 @@ public class CrearHTML extends javax.swing.JFrame {
                                                                      sintactico.lista_variables.get(i).linea,
                                                                      sintactico.lista_variables.get(i).columna});
                 }
+                
+                /*Imprimiendo en consola*/
+                this.jTextConsola.append(sintactico.consola);
+                
+                
            }
            
-//           /*Reporte de los tokens reconocidos durante el analisis*/
-//           Symbol s = (Symbol)lexico.next_token();  //Obtiene el primer token
-//           while(s.sym != 0){       //Si el token no es error... analizar
-//               System.out.println("Lexema: " + s.value + " Token: " + s.sym);
-//               s = (Symbol)lexico.next_token();
-//           }
         }catch (Exception ex){
             Logger.getLogger(CrearHTML.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -464,6 +567,15 @@ public class CrearHTML extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnListaErroresActionPerformed
 
+    /*VER TOKENS*/
+    private void btnTokensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTokensActionPerformed
+        try {
+            Desktop.getDesktop().open(new java.io.File("tokens.html"));
+        } catch (IOException ex) {
+            Logger.getLogger(CrearHTML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnTokensActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -503,6 +615,8 @@ public class CrearHTML extends javax.swing.JFrame {
     private javax.swing.JButton btnCompilar;
     private javax.swing.JButton btnListaErrores;
     private javax.swing.JButton btnPaginaResultante;
+    private javax.swing.JButton btnTokens;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -522,9 +636,11 @@ public class CrearHTML extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextAreaEditor;
     private javax.swing.JTextArea jTextConsola;
+    private javax.swing.JTextArea jTextHTML;
     // End of variables declaration//GEN-END:variables
 }
